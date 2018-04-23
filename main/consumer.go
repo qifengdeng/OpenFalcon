@@ -56,25 +56,6 @@ var (
 
 func main() {
 
-	//jsonStr := `{"MetricsName":"disk/io_read_bytes_rate","MetricsValue":{"value":81437.125},"MetricsTimestamp":"2018-04-18T06:35:00Z","MetricsTags":{"container_name":"system.slice/rsyslog.service","host_id":"k8s-master","hostname":"k8s-master","nodename":"k8s-master","resource_id":"8:0","type":"sys_container"}}`
-	//httpPost(`{"endpoint":"k8s-node-26","metric":"disk/io_read_bytes_rate","timestamp":1524041048,"step":60,"value":0,"counterType":"GAUGE","tags":""}`)
-	//return
-	//m := &Metric{}
-	//jsonStr := `{"MetricsName":"disk/io_read_bytes_rate","MetricsValue":{"value":81437.125},"MetricsTimestamp":"2018-04-18T06:35:00Z","MetricsTags":{"container_name":"system.slice/rsyslog.service","host_id":"k8s-master","hostname":"k8s-master","nodename":"k8s-master","resource_id":"8:0","type":"sys_container"}}`
-	//json.Unmarshal([]byte(jsonStr), m)
-	//
-	//fmt.Println(m.MetricsTags)
-	//
-	//f := &falconType{Endpoint: m.MetricsTags.Hostname, Metric: m.MetricsName, Timestamp: time.Now().UTC().Unix(), Step: 60, Value: m.MetricsValue.Value, CounterType: "GAUGE", Tags: ""}
-	//fJson, err := json.Marshal(f)
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//fmt.Println(string(fJson))
-	//
-	//
-	//return;
 	var c conf
 	c.getConf()
 	fmt.Println(c)
@@ -137,70 +118,7 @@ func main() {
 	consumer.Close()
 }
 
-//封装数据
-//func(falconType) setData(jsonStr string)(string ) {
-//	m := &Metric{}
-////	jsonStr := `{"MetricsName":"disk/io_read_bytes_rate","MetricsValue":{"value":81437.125},"MetricsTimestamp":"2018-04-18T06:35:00Z","MetricsTags":{"container_name":"system.slice/rsyslog.service","host_id":"k8s-master","hostname":"k8s-master","nodename":"k8s-master","resource_id":"8:0","type":"sys_container"}}`
-//	json.Unmarshal([]byte(jsonStr), m)
-//
-//	f := &falconType{Endpoint: m.MetricsTags.Hostname, Metric: m.MetricsName, Timestamp: time.Now().UTC().Unix(), Step: 60, Value: m.MetricsValue.Value, CounterType: "GAUGE", Tags: ""}
-//	//fJson, err := json.Marshal(f)
-//	//if err != nil {
-//	//	fmt.Println(err)
-//	//}
-//	return  f
-////	return  string(fJson)
-////	s,err:=string(fJson)
-//}
 
-/**
-
-//并发发送数据
-func (sink *openfalconSink) concurrentSendData(fts []falconType) {
-	sink.wg.Add(1)
-	//带缓存的channel，当达到最大的并发请求的时候阻塞
-	//将匿名孔结构体放入channel中
-	sink.conChan <- struct{}{}
-	go func(fts []falconType) {
-		sink.sendData(fts)
-	}(fts)
-}
-
-//发送数据
-func (sink *openfalconSink) sendData(fts []falconType) {
-	defer func() {
-		// empty an item from the channel so the next waiting request can run
-		<-sink.conChan
-		sink.wg.Done()
-	}()
-
-	falconJson, err := json.Marshal(fts)
-	if err != nil {
-		logger.Printf("Error: %v ,fail to marshal event to falcon type", err)
-		return
-	}
-
-	logger.Printf("push json info %s", falconJson)
-	resp, err := http.Post(sink.host, "application/json", bytes.NewReader(falconJson))
-	if err != nil {
-		logger.Printf("Error: %v ,fail to send %s to falcon ,err %s", string(falconJson[:]), err)
-	}
-	defer resp.Body.Close()
-	s, _ := ioutil.ReadAll(resp.Body)
-	glog.V(4).Infof("openfalcon response body :%s", s)
-	start := time.Now()
-	end := time.Now()
-	glog.V(4).Infof("Exported %d data to falcon in %s", len(fts), end.Sub(start))
-}
- */
-
-// func httpPost(dataArr []string,host string) {
-//	var jsonArrStr string
-//fmt.Println(dataArr)
-//jsonArrStr, err := json.Marshal(dataArr)
-//if err == nil {
-//fmt.Println(string(jsonArrStr.))
-//}
 func httpPost(fts []falconType,host string) {
 //	var jsonArrStr string
 //	fmt.Println(fts)
